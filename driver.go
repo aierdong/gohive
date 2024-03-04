@@ -75,6 +75,10 @@ func (d drv) Open(dsn string) (conn driver.Conn, err error) {
 		bgTransport.SetMaxLength(uint32(cfg.Batch))
 		transport = bgTransport
 	} else {
+		// todo: 当参数为PAM时，hive采用pam认证模块，同样需要提供username和password，只是原理大不相同。
+		//  PAM(Pluggable Authentication Modules)即可插拔式认证模块，它是一种高效而且灵活的用户级别的认证方式，
+		//  它也是当前Linux服务器普遍使用 的认证方式。PAM可以根据用户的网段、时间、用户名、密码等实现认证。
+		//  并不是所有需要验证的服务都使用PAM来验证，如MySQL-Server就没有安 装相应的PAM文件。
 		return nil, fmt.Errorf("unrecognized auth mechanism: %s", cfg.Auth)
 	}
 	if !transport.IsOpen() {
