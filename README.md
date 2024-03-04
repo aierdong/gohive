@@ -1,5 +1,10 @@
 # GoHive: A Go `database/sql` Driver for Hive
 
+> It is forked from sql-machine-learning/gohive.
+> 
+> added support for **custom/none/kerberos** authentication.
+> 
+
 [![Build Status](https://travis-ci.org/sql-machine-learning/gohive.svg?branch=develop)](https://travis-ci.org/travis-ci/travis-web)
 
 To access databases, Go programmers call the standard library `database/sql`, which relies on *drivers* to talk to database management systems.  GoHive is such a driver that talks to Hive via [HiveServer2](https://cwiki.apache.org/confluence/display/Hive/Setting+Up+HiveServer2#SettingUpHiveServer2-HiveServer2), a Thrift server.
