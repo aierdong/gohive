@@ -12,14 +12,14 @@ func TestParseDSNWithSessionConf(t *testing.T) {
 	cfg := &Config{
 		User:       "usr",
 		Passwd:     "pswd",
-		Addr:       "hiveserver",
+		Addr:       "hiveserver:10000",
 		DBName:     "mydb",
 		Auth:       "PLAIN",
 		Batch:      200,
 		SessionCfg: sc,
 	}
 	dsn := cfg.FormatDSN()
-	assert.Equal(t, dsn, "usr:pswd@hiveserver/mydb?batch=200&auth=PLAIN&session.mapreduce_job_quenename=mr")
+	assert.Equal(t, dsn, "usr:pswd@hiveserver:10000/mydb?batch=200&auth=PLAIN&session.mapreduce_job_quenename=mr")
 
 	cfg2, e := ParseDSN(dsn)
 	assert.Nil(t, e)
@@ -116,4 +116,18 @@ func TestFormatDSNWithoutDBName(t *testing.T) {
 
 	ds2 := cfg.FormatDSN()
 	assert.Equal(t, ds2, ds)
+}
+
+func TestParseDSNWithGSSAPI(t *testing.T) {
+	cfg, e := ParseDSN("root:root@127.0.0.1?auth=GSSAPI&service=hive")
+	assert.Nil(t, e)
+	assert.Equal(t, cfg.User, "root")
+	assert.Equal(t, cfg.Passwd, "root")
+	assert.Equal(t, cfg.Addr, "127.0.0.1")
+	assert.Equal(t, cfg.Auth, "GSSAPI")
+	assert.Equal(t, cfg.Service, "hive")
+	assert.Equal(t, cfg.Batch, defaultBatchSize)
+
+	cfg, e = ParseDSN("root:root@127.0.0.1?auth=KERBEROS&service=hive")
+	assert.Equal(t, cfg.Auth, "KERBEROS")
 }

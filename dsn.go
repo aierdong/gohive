@@ -14,6 +14,7 @@ type Config struct {
 	Addr       string
 	DBName     string
 	Auth       string
+	Service    string
 	Batch      int
 	SessionCfg map[string]string
 }
@@ -29,6 +30,7 @@ const (
 	authConfName      = "auth"
 	defaultAuth       = "NOSASL"
 	batchSizeName     = "batch"
+	serviceName       = "service"
 	defaultBatchSize  = 10000
 )
 
@@ -60,6 +62,7 @@ func ParseDSN(dsn string) (*Config, error) {
 
 	auth := defaultAuth
 	batch := defaultBatchSize
+	service := ""
 	sc := make(map[string]string)
 	if len(sub[3]) > 0 && sub[3][0] == '?' {
 		qry, _ := url.ParseQuery(sub[3][1:])
@@ -73,6 +76,9 @@ func ParseDSN(dsn string) (*Config, error) {
 				return nil, err
 			}
 			batch = bch
+		}
+		if v, found := qry[serviceName]; found {
+			service = v[0]
 		}
 
 		for k, v := range qry {
@@ -89,6 +95,7 @@ func ParseDSN(dsn string) (*Config, error) {
 		DBName:     dbname,
 		Auth:       auth,
 		Batch:      batch,
+		Service:    service,
 		SessionCfg: sc,
 	}, nil
 }
